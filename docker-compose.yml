@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_ENV=development
+      - DB_HOST=mysql
+      - DB_NAME=flask
+      - DB_USER=flask
+      - DB_PASSWORD=proxmox1234
+    command: bash -c 'python3 run.py'
+    ports:
+      - '5000:5000'
+    volumes:
+      - '.:/code'
+    tty: true
+    privileged: true
+    depends_on:
+      - 'mysql'
+  mysql:
+    image: 'mariadb'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=proxmox1234
+      - MYSQL_DATABASE=flask
+      - MYSQL_USER=flask
+      - MYSQL_PASSWORD=proxmox1234
+
+volumes:
+  mysql-data:
+    driver: local
