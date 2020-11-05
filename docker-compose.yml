@@ -5,13 +5,11 @@ services:
     build:
       context: .
     environment:
-      - FLASK_APP=app.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_ENV=development
       - DB_HOST=mysql
       - DB_NAME=flask
       - DB_USER=flask
       - DB_PASSWORD=proxmox1234
+      - JWT_SECRET_KEY=promoxsecretkey
     command: bash -c 'python3 run.py'
     ports:
       - '5000:5000'
