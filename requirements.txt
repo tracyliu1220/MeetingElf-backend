@@ -1,6 +1,5 @@
 Flask==1.1.2
-redis==3.5.3
-rq==1.5.2
 flask-sqlalchemy
-flask-bcrypt
 flask-restful
+jwt
+Werkzeug
