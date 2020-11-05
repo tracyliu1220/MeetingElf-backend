@@ -9,6 +9,25 @@ from app.mod_user.models import User
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
+def login_required(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    token = request.cookies.get('token')
+    if not token:
+        return jsonify({'message': 'Token not found'}), 401
+
+    try:
+      data = jwt.decode(token, app.config['JWT_SECRET_KEY'])
+      current_user = User.query.get(data['user_id'])
+    except:
+      return jsonify({'message': 'Token is invalid'}), 401
+
+    if not current_user:
+      return jsonify({'message': 'Token is invalid'}), 401
+
+    return f(current_user, *args, **kwargs)
+  return decorated
+  
 @mod_auth.route('login', methods=['POST'])
 def auth_login():
   req = request.get_json(force=True)
