@@ -4,6 +4,7 @@ import binascii
 import app
 from app import db
 from app.utils.db_base import Base
+from app.mod_participate.models import Participate
 # from app.config import MEETING_HASH_KEY
 
 # des = DES.new(MEETING_HASH_KEY, DES.MODE_ECB)
@@ -12,7 +13,7 @@ class Meeting(Base):
   host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
   host = db.relationship('User', foreign_keys=[host_id], back_populates='host_meetings')
-  # users = db.relationship('User', secondary='participate')
+  users = db.relationship('User', secondary='participate')
 
   title = db.Column(db.String(100), nullable=False)
   mode = db.Column(db.String(15), nullable=False)
