@@ -3,12 +3,15 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import app
 from app import db
 from app.utils.db_base import Base
+from app.mod_participate.models import Participate
 
 class User(Base):
-  # id = db.Column(db.Integer, primary_key=True)
   username = db.Column(db.String(80), unique=False, nullable=False)
   email = db.Column(db.String(120), unique=True, nullable=False)
   password = db.Column(db.String(128))
+
+  host_meetings = db.relationship('Meeting', back_populates='host')
+  meetings = db.relationship('Meeting', secondary='participate')
 
   def set_password(self, plaintext):
     self.password = generate_password_hash(plaintext)
