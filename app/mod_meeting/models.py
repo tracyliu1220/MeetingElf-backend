@@ -5,9 +5,6 @@ import app
 from app import db
 from app.utils.db_base import Base
 from app.mod_participate.models import Participate
-# from app.config import MEETING_HASH_KEY
-
-# des = DES.new(MEETING_HASH_KEY, DES.MODE_ECB)
 
 class Meeting(Base):
   host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -32,7 +29,7 @@ class Meeting(Base):
 
   def hash_id(self, des):
     plain = str(self.id)
-    plain = (16 - len(plain)) * '0' + plain # padding to 32
+    plain = (16 - len(plain)) * '0' + plain
     enc = des.encrypt(plain.encode())
     enc = binascii.hexlify(enc).decode().upper()
     return enc

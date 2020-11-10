@@ -3,8 +3,6 @@ import datetime
 import app
 from app import db
 from app.utils.db_base import Base
-# from app.mod_user.models import User
-# from app.mod_meeting.models import Meeting
 
 class Participate(Base):
   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
