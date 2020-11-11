@@ -27,7 +27,7 @@ def login_required(f):
 
     return f(current_user, *args, **kwargs)
   return decorated
-  
+
 @mod_auth.route('login', methods=['POST'])
 def auth_login():
   req = request.get_json(force=True)
@@ -45,7 +45,7 @@ def auth_login():
 
   token = jwt.encode({'user_id': user.id}, app.config['JWT_SECRET_KEY'])
 
-  res = make_response({'message': 'Success'}, 200)
+  res = make_response({'id': user.id, 'message': 'Success'}, 200)
   res.set_cookie(key='token', value=token, expires=time.time()+300)
 
   return res

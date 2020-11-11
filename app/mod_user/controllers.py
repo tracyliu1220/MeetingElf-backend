@@ -36,6 +36,9 @@ def user_create():
 @mod_user.route('/<id>', methods=['PATCH'])
 @login_required
 def user_update(current_user, id):
+  if current_user.id != int(id):
+    return jsonify({'message': 'Forbidden'}), 403
+
   if request.json.get('username'):
     current_user.username = request.json.get('username')
     db.session.commit()
