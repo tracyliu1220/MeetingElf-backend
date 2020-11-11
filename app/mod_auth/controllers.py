@@ -46,6 +46,6 @@ def auth_login():
   token = jwt.encode({'user_id': user.id}, app.config['JWT_SECRET_KEY'])
 
   res = make_response({'id': user.id, 'message': 'Success'}, 200)
-  res.set_cookie(key='token', value=token, expires=time.time()+300)
+  res.set_cookie(key='token', value=token, expires=time.time()+3600, httponly=True)
 
   return res
