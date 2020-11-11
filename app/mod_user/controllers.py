@@ -1,8 +1,12 @@
 from flask import Blueprint, request, jsonify
+from Crypto.Cipher import DES
 
+from app import app
 from app import db
 from app.mod_user.models import User
 from app.mod_auth.controllers import login_required
+
+des = DES.new(app.config['MEETING_HASH_KEY'], DES.MODE_ECB)
 
 mod_user = Blueprint('user', __name__, url_prefix='/users')
 
@@ -51,3 +55,14 @@ def user_update(current_user, id):
       return jsonify({'message': 'Old password does not match'}), 400
 
   return jsonify({'message': 'Success'}), 200
+
+@mod_user.route('/<id>/meetings', methods=['GET'])
+@login_required
+def user_get_meetings(current_user, id):
+  id = int(id)
+  if current_user.id != id:
+    return jsonify({'message': 'Forbidden'}), 403
+
+  meetings = [meeting.serialized(des) for meeting in current_user.meetings]
+
+  return jsonify(meetings), 200
