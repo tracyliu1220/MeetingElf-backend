@@ -63,6 +63,9 @@ def user_get_meetings(current_user, id):
   if current_user.id != id:
     return jsonify({'message': 'Forbidden'}), 403
 
-  meetings = [meeting.serialized(des) for meeting in current_user.meetings]
+  if request.args.get('host') == 'true':
+    meetings = [meeting.serialized(des) for meeting in current_user.host_meetings]
+  else:
+    meetings = [meeting.serialized(des) for meeting in current_user.meetings]
 
   return jsonify(meetings), 200
