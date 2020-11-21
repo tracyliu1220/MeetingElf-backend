@@ -1,6 +1,7 @@
 Flask==1.1.2
 flask-sqlalchemy
 flask-restful
+flask-migrate
 PyJWT
 Werkzeug
 pycryptodome
