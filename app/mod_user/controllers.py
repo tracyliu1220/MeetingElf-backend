@@ -37,6 +37,14 @@ def user_create():
 
   return jsonify({'message': 'Success'}), 200
 
+@mod_user.route('/<id>', methods=['GET'])
+@login_required
+def user_show(current_user, id):
+  if current_user.id != int(id):
+    return jsonify({'message': 'Forbidden'}), 403
+
+  return jsonify(current_user.serialized), 200
+
 @mod_user.route('/<id>', methods=['PATCH'])
 @login_required
 def user_update(current_user, id):

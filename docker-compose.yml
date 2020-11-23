@@ -11,7 +11,7 @@ services:
       - DB_PASSWORD=proxmox1234
       - JWT_SECRET_KEY=promoxsecretkey
       - MEETING_HASH_KEY=meethash
-    command: bash -c 'bash'
+    command: bash -c 'python3 run.py'
     ports:
       - '5000:5000'
     volumes:
