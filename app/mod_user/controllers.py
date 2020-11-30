@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response
 from Crypto.Cipher import DES
 
 from app import app
@@ -35,7 +35,9 @@ def user_create():
   db.session.add(user)
   db.session.commit()
 
-  return jsonify({'message': 'Success'}), 200
+  res = make_response({'id': user.id, 'message': 'Success'})
+
+  return res, 200
 
 @mod_user.route('/<id>', methods=['GET'])
 @login_required
