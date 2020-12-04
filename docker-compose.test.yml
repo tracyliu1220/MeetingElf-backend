@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+      - FLASK_APP=app
+      - FLASK_RUN_HOST=0.0.0.0
+      - FLASK_DEBUG=1
+      - DB_HOST=mysql
+      - DB_NAME=flask
+      - DB_USER=flask
+      - DB_PASSWORD=proxmox1234
+      - JWT_SECRET_KEY=promoxsecretkey
+      - MEETING_HASH_KEY=meethash
+    command: bash -c 'flask test'
+    ports:
+      - '5001:5000'
+    volumes:
+      - '.:/code'
+    tty: true
+    privileged: true
+    depends_on:
+      - 'mysql'
+  mysql:
+    image: 'mariadb'
+    ports:
+      - '3366:3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=proxmox1234
+      - MYSQL_DATABASE=flask
+      - MYSQL_USER=flask
+      - MYSQL_PASSWORD=proxmox1234
+
+volumes:
+  mysql-data:
+    driver: local
