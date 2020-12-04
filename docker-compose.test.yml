@@ -14,7 +14,7 @@ services:
       - DB_PASSWORD=proxmox1234
       - JWT_SECRET_KEY=promoxsecretkey
       - MEETING_HASH_KEY=meethash
-    command: bash -c 'flask test'
+    command: bash -c 'flask test && find . | grep __pycache__ | xargs rm -rf'
     ports:
       - '5001:5000'
     volumes:
