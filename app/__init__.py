@@ -25,7 +25,6 @@ def hello():
 
 @app.cli.command()
 def test():
-  print('flask cli test')
   import unittest
   import sys
 
