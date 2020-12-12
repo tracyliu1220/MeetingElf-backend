@@ -49,3 +49,9 @@ def auth_login():
   res.set_cookie(key='token', value=token, expires=time.time()+3600, httponly=True)
 
   return res
+
+@mod_auth.route('logout', methods=['DELETE'])
+def auth_logout():
+  res = make_response({'message': 'Success'}, 200)
+  res.set_cookie(key='token', value='', expires=0)
+  return res
