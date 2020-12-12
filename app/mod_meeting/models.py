@@ -5,12 +5,13 @@ import app
 from app import db
 from app.utils.db_base import Base
 from app.mod_participate.models import Participate
+from app.mod_user.models import User
 
 class Meeting(Base):
   host_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
   host = db.relationship('User', foreign_keys=[host_id], back_populates='host_meetings')
-  users = db.relationship('User', secondary='participate')
+  participates = db.relationship('Participate', back_populates='meeting')
 
   title = db.Column(db.String(100), nullable=False)
   mode = db.Column(db.String(15), nullable=False)

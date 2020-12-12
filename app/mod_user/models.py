@@ -11,7 +11,7 @@ class User(Base):
   password = db.Column(db.String(128))
 
   host_meetings = db.relationship('Meeting', back_populates='host')
-  meetings = db.relationship('Meeting', secondary='participate')
+  participates = db.relationship('Participate', back_populates='user')
 
   def set_password(self, plaintext):
     self.password = generate_password_hash(plaintext)
