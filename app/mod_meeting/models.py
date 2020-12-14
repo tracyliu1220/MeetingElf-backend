@@ -15,7 +15,7 @@ class Meeting(Base):
   participates = db.relationship('Participate', back_populates='meeting')
 
   title = db.Column(db.String(100), nullable=False)
-  mode = db.Column(db.String(15), nullable=False)
+  mode = db.Column(db.String(15), default='weekly')
   description = db.Column(db.String(1000))
   meeting_link = db.Column(db.String(100))
   location = db.Column(db.String(100))
