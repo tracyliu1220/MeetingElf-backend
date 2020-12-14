@@ -42,5 +42,6 @@ class Participate(db.Model):
   def serialized_user(self):
     return {
               'vote': self.vote,
-              'user': self.user.serialized
+              'user': self.user.serialized,
+              'vote_slots': self.vote_slots
            }
