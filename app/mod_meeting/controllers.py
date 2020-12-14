@@ -32,7 +32,7 @@ def meeting_create(current_user):
   db.session.add(meeting)
   db.session.commit()
 
-  participate = Participate(user_id=current_user.id, meeting_id=meeting.id)
+  participate = Participate(user_id=current_user.id, meeting_id=meeting.id, vote_slots=[])
   db.session.add(participate)
   db.session.commit()
 
