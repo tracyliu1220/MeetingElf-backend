@@ -21,12 +21,11 @@ def meeting_create(current_user):
   meeting = Meeting(
               host_id=current_user.id,
               title=req['title'],
-              mode=req['mode'],
               description=req['description'],
               meeting_link=req['meeting_link'],
               location=req['location'],
-              start_hour=req['start_hour'],
-              end_hour=req['end_hour'],
+              start_hour=int(req['start_hour']),
+              end_hour=int(req['end_hour']),
               final_slots=[]
   )
   db.session.add(meeting)
