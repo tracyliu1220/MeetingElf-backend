@@ -13,7 +13,7 @@ class Participate(db.Model):
   user = db.relationship('User', foreign_keys=[user_id], back_populates='participates')
   meeting = db.relationship('Meeting', foreign_keys=[meeting_id], back_populates='participates')
 
-  vote = db.Column(db.Boolean)
+  vote = db.Column(db.Boolean, default=False)
   vote_slots = db.Column(db.JSON)
   # vote_slots
   # {
@@ -30,3 +30,17 @@ class Participate(db.Model):
   @property
   def last_view():
     return datetime.datetime.utcnow()
+
+  @property
+  def serialized_meeting(self):
+    return {
+              'vote': self.vote,
+              'meeting': self.meeting.serialized
+           }
+
+  @property
+  def serialized_user(self):
+    return {
+              'vote': self.vote,
+              'user': self.user.serialized
+           }

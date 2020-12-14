@@ -1,12 +1,9 @@
 from flask import Blueprint, request, jsonify, make_response
-from Crypto.Cipher import DES
 
 from app import app
 from app import db
 from app.mod_user.models import User
 from app.mod_auth.controllers import login_required
-
-des = DES.new(app.config['MEETING_HASH_KEY'], DES.MODE_ECB)
 
 mod_user = Blueprint('user', __name__, url_prefix='/users')
 
@@ -74,8 +71,8 @@ def user_get_meetings(current_user, id):
     return jsonify({'message': 'Forbidden'}), 403
 
   if request.args.get('host') == 'true':
-    meetings = [meeting.serialized(des) for meeting in current_user.host_meetings]
+    meetings = [meeting.serialized for meeting in current_user.host_meetings]
   else:
-    meetings = [meeting.serialized(des) for meeting in current_user.meetings]
+    meetings = [p.serialized_meeting for p in current_user.participates]
 
   return jsonify(meetings), 200
