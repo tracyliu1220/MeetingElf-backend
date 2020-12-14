@@ -26,7 +26,8 @@ def meeting_create(current_user):
               meeting_link=req['meeting_link'],
               location=req['location'],
               start_hour=req['start_hour'],
-              end_hour=req['end_hour']
+              end_hour=req['end_hour'],
+              final_slots=[]
   )
   db.session.add(meeting)
   db.session.commit()
