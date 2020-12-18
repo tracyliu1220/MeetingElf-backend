@@ -36,3 +36,70 @@ def meeting_create(current_user):
   db.session.commit()
 
   return jsonify({'hash_id': meeting.hash_id, 'message': 'Success'}), 200
+
+def calculate_vote_slots(meeting):
+  vote_slots = []
+  for p in meeting.participates:
+    for pv in p.vote_slots:
+      found = 0
+      for v in vote_slots:
+        if pv['day'] == v['day'] and pv['hour'] == v['hour'] and pv['minute'] == v['minute']:
+          v['count'] += 1
+          found = 1
+      if not found:
+        vote_slots.append(pv)
+        vote_slots[len(vote_slots) - 1]['count'] = 1
+  return vote_slots
+
+@mod_meeting.route('/<hash_id>', methods=['GET'])
+def meeting_show(hash_id):
+  req = request.get_json(force=True)
+
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+  vote_slots = calculate_vote_slots(meeting)
+  meeting_serialize = meeting.serialized
+  meeting_serialize['vote_slots'] = vote_slots
+
+  return jsonify(meeting_serialize), 200
+
+@mod_meeting.route('/<hash_id>', methods=['PATCH'])
+@login_required
+def meeting_update(current_user, hash_id):
+  req = request.get_json(force=True)
+
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if meeting.host_id != current_user.id:
+    return jsonify({'message': 'Forbidden (host_id not correct)'}), 403
+
+  meeting.title = req['title']
+  meeting.description = req['description']
+  meeting.meeting_link = req['meeting_link']
+  meeting.location = req['location']
+  meeting.start_hour = int(req['start_hour'])
+  meeting.end_hour = int(req['end_hour'])
+  # TODO
+  # meeting.final_slots=[]
+
+  db.session.add(meeting)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
+
+@mod_meeting.route('/<hash_id>/participate', methods=['POST'])
+@login_required
+def meeting_participate_create(current_user, hash_id):
+  meeting_id = Meeting.get_id(hash_id)
+
+  participate = Participate.query.get((current_user.id, meeting_id))
+
+  print(participate)
+
+  if participate:
+    return jsonify({'message': 'Already participated this meeting'}), 400
+
+  participate = Participate(user_id=current_user.id, meeting_id=meeting_id, vote_slots=[])
+  db.session.add(participate)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
