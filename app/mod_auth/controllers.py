@@ -7,7 +7,7 @@ from app import app
 from app import db
 from app.mod_user.models import User
 
-mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
+mod_auth = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 def login_required(f):
   @wraps(f)

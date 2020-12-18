@@ -6,7 +6,7 @@ from app.mod_participate.models import Participate
 from app.mod_meeting.models import Meeting
 from app.mod_auth.controllers import login_required
 
-mod_meeting = Blueprint('meeting', __name__, url_prefix='/meetings')
+mod_meeting = Blueprint('meeting', __name__, url_prefix='/api/meetings')
 
 @mod_meeting.route('', methods=['GET'])
 def meeting_index():

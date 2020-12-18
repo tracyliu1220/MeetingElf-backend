@@ -19,7 +19,7 @@ app.register_blueprint(meeting_module)
 
 db.create_all()
 
-@app.route('/', methods=['GET'])
+@app.route('/api/hello', methods=['GET'])
 def hello():
     return 'Hello Meetinelf!'
 

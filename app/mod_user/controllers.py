@@ -5,7 +5,7 @@ from app import db
 from app.mod_user.models import User
 from app.mod_auth.controllers import login_required
 
-mod_user = Blueprint('user', __name__, url_prefix='/users')
+mod_user = Blueprint('user', __name__, url_prefix='/api/users')
 
 @mod_user.route('', methods=['GET'])
 def user_index():
