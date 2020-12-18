@@ -69,6 +69,9 @@ def meeting_update(current_user, hash_id):
 
   meeting = Meeting.query.get(Meeting.get_id(hash_id))
 
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
   if meeting.host_id != current_user.id:
     return jsonify({'message': 'Forbidden (host_id not correct)'}), 403
 
@@ -86,14 +89,35 @@ def meeting_update(current_user, hash_id):
 
   return jsonify({'message': 'Success'}), 200
 
+@mod_meeting.route('/<hash_id>', methods=['DELETE'])
+@login_required
+def meeting_destroy(current_user, hash_id):
+  req = request.get_json(force=True)
+
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  if meeting.host_id != current_user.id:
+    return jsonify({'message': 'Forbidden (host_id not correct)'}), 403
+
+  db.session.delete(meeting)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
+
 @mod_meeting.route('/<hash_id>/participate', methods=['POST'])
 @login_required
 def meeting_participate_create(current_user, hash_id):
   meeting_id = Meeting.get_id(hash_id)
 
-  participate = Participate.query.get((current_user.id, meeting_id))
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
 
-  print(participate)
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  participate = Participate.query.get((current_user.id, meeting_id))
 
   if participate:
     return jsonify({'message': 'Already participated this meeting'}), 400
