@@ -53,8 +53,6 @@ def calculate_vote_slots(meeting):
 
 @mod_meeting.route('/<hash_id>', methods=['GET'])
 def meeting_show(hash_id):
-  req = request.get_json(force=True)
-
   meeting = Meeting.query.get(Meeting.get_id(hash_id))
   vote_slots = calculate_vote_slots(meeting)
   meeting_serialize = meeting.serialized
@@ -92,8 +90,6 @@ def meeting_update(current_user, hash_id):
 @mod_meeting.route('/<hash_id>', methods=['DELETE'])
 @login_required
 def meeting_destroy(current_user, hash_id):
-  req = request.get_json(force=True)
-
   meeting = Meeting.query.get(Meeting.get_id(hash_id))
 
   if not meeting:
