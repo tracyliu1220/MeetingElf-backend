@@ -103,6 +103,25 @@ def meeting_destroy(current_user, hash_id):
 
   return jsonify({'message': 'Success'}), 200
 
+# === handle participate relationship ===
+
+@mod_meeting.route('/<hash_id>/participate', methods=['GET'])
+@login_required
+def meeting_participate_show(current_user, hash_id):
+  meeting_id = Meeting.get_id(hash_id)
+
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  participate = Participate.query.get((current_user.id, meeting_id))
+
+  if participate:
+    return jsonify({'participate': True, 'message': 'Already participated this meeting'}), 200
+
+  return jsonify({'participate': False, 'message': 'Didn\'t participate'}), 200
+
 @mod_meeting.route('/<hash_id>/participate', methods=['POST'])
 @login_required
 def meeting_participate_create(current_user, hash_id):
@@ -123,3 +142,40 @@ def meeting_participate_create(current_user, hash_id):
   db.session.commit()
 
   return jsonify({'message': 'Success'}), 200
+
+@mod_meeting.route('/<hash_id>/participate', methods=['DELETE'])
+@login_required
+def meeting_participate_destroy(current_user, hash_id):
+  meeting_id = Meeting.get_id(hash_id)
+
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  participate = Participate.query.get((current_user.id, meeting_id))
+
+  if not participate:
+    return jsonify({'message': 'Didn\'t participate'}), 400
+
+  db.session.delete(participate)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
+
+# === handle voting ===
+
+@mod_meeting.route('/<hash_id>/vote', methods=['GET'])
+@login_required
+def meeting_vote_show(current_user, hash_id):
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  participate = Participate.query.get((current_user.id, meeting.id))
+
+  if not participate:
+    return jsonify({'message': 'Didn\'t participate'}), 400
+
+  return jsonify(participate.serialized), 200
