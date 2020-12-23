@@ -32,6 +32,13 @@ class Participate(db.Model):
     return datetime.datetime.utcnow()
 
   @property
+  def serialized(self):
+    return {
+              'vote': self.vote,
+              'vote_slots': self.vote_slots
+           }
+
+  @property
   def serialized_meeting(self):
     return {
               'vote': self.vote,
