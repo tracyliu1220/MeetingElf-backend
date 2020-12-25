@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 
 from app import app
 from app import db
+from app.mod_participate.models import Participate
 from app.mod_reference.models import Reference
 from app.mod_auth.controllers import login_required
 
@@ -18,10 +19,16 @@ def reference_show(id):
     return jsonify(reference.serialized), 200
 
 @mod_reference.route('/<id>', methods=['PATCH'])
-def reference_update(id):
-    req = request.get_json(force=True)
-
+@login_required
+def reference_update(current_user, id):
     reference = Reference.query.get(int(id))
+
+    participate = Participate.query.get((current_user.id, reference.meeting.id))
+
+    if not participate:
+      return jsonify({'message': 'Haven\'t participate in this meeting'}), 200
+
+    req = request.get_json(force=True)
     reference.title = req['title']
     reference.link = req['link']
 
