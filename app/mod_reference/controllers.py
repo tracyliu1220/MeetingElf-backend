@@ -11,3 +11,8 @@ mod_reference = Blueprint('reference', __name__, url_prefix='/api/references')
 def reference_index():
     references = [reference.serialized for reference in Reference.query.all()]
     return jsonify(references), 200
+
+@mod_reference.route('/<id>', methods=['GET'])
+def reference_show(id):
+    reference = Reference.query.get(int(id))
+    return jsonify(reference.serialized), 200
