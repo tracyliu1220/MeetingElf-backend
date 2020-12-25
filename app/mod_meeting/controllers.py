@@ -179,3 +179,25 @@ def meeting_vote_show(current_user, hash_id):
     return jsonify({'message': 'Didn\'t participate'}), 400
 
   return jsonify(participate.serialized), 200
+
+@mod_meeting.route('/<hash_id>/vote', methods=['POST'])
+@login_required
+def meeting_vote(current_user, hash_id):
+  req = request.get_json(force=True)
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  participate = Participate.query.get((current_user.id, meeting.id))
+
+  if not participate:
+    return jsonify({'message': 'Didn\'t participate'}), 400
+
+  participate.vote = False if len(req) == 0 else True
+  participate.vote_slots = req
+
+  db.session.add(participate)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
