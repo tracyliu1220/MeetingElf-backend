@@ -16,12 +16,19 @@ def reference_index():
 @mod_reference.route('/<id>', methods=['GET'])
 def reference_show(id):
     reference = Reference.query.get(int(id))
+
+    if not reference:
+      return jsonify({'message': 'Reference not found'}), 404
+
     return jsonify(reference.serialized), 200
 
 @mod_reference.route('/<id>', methods=['PATCH'])
 @login_required
 def reference_update(current_user, id):
     reference = Reference.query.get(int(id))
+
+    if not reference:
+      return jsonify({'message': 'Reference not found'}), 404
 
     participate = Participate.query.get((current_user.id, reference.meeting.id))
 
