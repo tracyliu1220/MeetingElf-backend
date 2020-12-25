@@ -16,6 +16,8 @@ from app.mod_user.controllers import mod_user as user_module
 app.register_blueprint(user_module)
 from app.mod_meeting.controllers import mod_meeting as meeting_module
 app.register_blueprint(meeting_module)
+from app.mod_reference.controllers import mod_reference as reference_module
+app.register_blueprint(reference_module)
 
 db.create_all()
 

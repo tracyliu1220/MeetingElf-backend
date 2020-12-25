@@ -13,6 +13,7 @@ class Meeting(Base):
 
   host = db.relationship('User', foreign_keys=[host_id], back_populates='host_meetings')
   participates = db.relationship('Participate', back_populates='meeting', cascade="all, delete-orphan")
+  references = db.relationship('Reference', back_populates='meeting', cascade="all, delete-orphan")
 
   title = db.Column(db.String(100), nullable=False)
   mode = db.Column(db.String(15), default='weekly')
