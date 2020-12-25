@@ -201,3 +201,15 @@ def meeting_vote(current_user, hash_id):
   db.session.commit()
 
   return jsonify({'message': 'Success'}), 200
+
+# === handle references ===
+
+@mod_meeting.route('/<hash_id>/references', methods=['GET'])
+def meeting_references(hash_id):
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  references = [reference.serialized for reference in meeting.references]
+  return jsonify(references), 200
