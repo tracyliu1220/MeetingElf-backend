@@ -16,3 +16,16 @@ def reference_index():
 def reference_show(id):
     reference = Reference.query.get(int(id))
     return jsonify(reference.serialized), 200
+
+@mod_reference.route('/<id>', methods=['PATCH'])
+def reference_update(id):
+    req = request.get_json(force=True)
+
+    reference = Reference.query.get(int(id))
+    reference.title = req['title']
+    reference.link = req['link']
+
+    db.session.add(reference)
+    db.session.commit()
+
+    return jsonify({'message': 'Success'}), 200
