@@ -36,3 +36,21 @@ def reference_update(current_user, id):
     db.session.commit()
 
     return jsonify({'message': 'Success'}), 200
+
+@mod_reference.route('/<id>', methods=['DELETE'])
+@login_required
+def reference_destroy(current_user, id):
+    reference = Reference.query.get(int(id))
+
+    if not reference:
+      return jsonify({'message': 'Reference not found'}), 404
+
+    participate = Participate.query.get((current_user.id, reference.meeting.id))
+
+    if not participate:
+      return jsonify({'message': 'Haven\'t participate in this meeting'}), 200
+
+    db.session.delete(reference)
+    db.session.commit()
+
+    return jsonify({'message': 'Success'}), 200
