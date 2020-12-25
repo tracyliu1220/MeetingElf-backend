@@ -4,6 +4,7 @@ from app import app
 from app import db
 from app.mod_participate.models import Participate
 from app.mod_meeting.models import Meeting
+from app.mod_reference.models import Reference
 from app.mod_auth.controllers import login_required
 
 mod_meeting = Blueprint('meeting', __name__, url_prefix='/api/meetings')
@@ -205,11 +206,28 @@ def meeting_vote(current_user, hash_id):
 # === handle references ===
 
 @mod_meeting.route('/<hash_id>/references', methods=['GET'])
-def meeting_references(hash_id):
-  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+def meeting_reference(hash_id):
+  meeting_id = Meeting.get_id(hash_id)
+  meeting = Meeting.query.get(meeting_id)
 
   if not meeting:
     return jsonify({'message': 'Meeting not found'}), 404
 
   references = [reference.serialized for reference in meeting.references]
   return jsonify(references), 200
+
+@mod_meeting.route('/<hash_id>/references', methods=['POST'])
+def meeting_reference_create(hash_id):
+  meeting_id = Meeting.get_id(hash_id)
+  meeting = Meeting.query.get(meeting_id)
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  req = request.get_json(force=True)
+  reference = Reference(meeting_id=meeting_id, title=req['title'], link=req['link'])
+
+  db.session.add(reference)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
