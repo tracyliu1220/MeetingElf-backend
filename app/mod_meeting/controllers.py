@@ -202,8 +202,8 @@ def meeting_vote(current_user, hash_id):
   if not participate:
     return jsonify({'message': 'Didn\'t participate'}), 400
 
-  participate.vote = False if len(req) == 0 else True
-  participate.vote_slots = req
+  participate.vote = False if len(req['vote_slots']) == 0 else True
+  participate.vote_slots = req['vote_slots']
 
   db.session.add(participate)
   db.session.commit()
@@ -230,7 +230,7 @@ def meeting_final_vote(current_user, hash_id):
   if not meeting:
     return jsonify({'message': 'Meeting not found'}), 404
 
-  meeting.final_slots = req
+  meeting.final_slots = req['final_slots']
 
   db.session.add(meeting)
   db.session.commit()
