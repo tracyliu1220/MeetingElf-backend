@@ -52,12 +52,19 @@ def calculate_vote_slots(meeting):
         vote_slots[len(vote_slots) - 1]['count'] = 1
   return vote_slots
 
+def caluculate_max_vote_slots(vote_slots):
+  max_vote = 0
+  for v in vote_slots:
+    max_vote = max(v['count'], max_vote)
+  return max_vote
+
 @mod_meeting.route('/<hash_id>', methods=['GET'])
 def meeting_show(hash_id):
   meeting = Meeting.query.get(Meeting.get_id(hash_id))
   vote_slots = calculate_vote_slots(meeting)
   meeting_serialize = meeting.serialized
   meeting_serialize['vote_slots'] = vote_slots
+  meeting_serialize['max_vote'] = caluculate_max_vote_slots(vote_slots)
 
   return jsonify(meeting_serialize), 200
 
@@ -199,6 +206,33 @@ def meeting_vote(current_user, hash_id):
   participate.vote_slots = req
 
   db.session.add(participate)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
+
+# === handle final voting ===
+
+@mod_meeting.route('/<hash_id>/final_vote', methods=['GET'])
+def meeting_final_vote_show(hash_id):
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  return jsonify(meeting.final_slots), 200
+
+@mod_meeting.route('/<hash_id>/final_vote', methods=['POST'])
+@login_required
+def meeting_final_vote(current_user, hash_id):
+  req = request.get_json(force=True)
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  meeting.final_slots = req
+
+  db.session.add(meeting)
   db.session.commit()
 
   return jsonify({'message': 'Success'}), 200
