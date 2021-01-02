@@ -203,6 +203,33 @@ def meeting_vote(current_user, hash_id):
 
   return jsonify({'message': 'Success'}), 200
 
+# === handle final voting ===
+
+@mod_meeting.route('/<hash_id>/final_vote', methods=['GET'])
+def meeting_final_vote_show(hash_id):
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  return jsonify(meeting.final_slots), 200
+
+@mod_meeting.route('/<hash_id>/final_vote', methods=['POST'])
+@login_required
+def meeting_final_vote(current_user, hash_id):
+  req = request.get_json(force=True)
+  meeting = Meeting.query.get(Meeting.get_id(hash_id))
+
+  if not meeting:
+    return jsonify({'message': 'Meeting not found'}), 404
+
+  meeting.final_slots = req
+
+  db.session.add(meeting)
+  db.session.commit()
+
+  return jsonify({'message': 'Success'}), 200
+
 # === handle references ===
 
 @mod_meeting.route('/<hash_id>/references', methods=['GET'])
