@@ -64,5 +64,7 @@ class Meeting(Base):
               'description': self.description,
               'meeting_link': self.meeting_link,
               'location': self.location,
-              'final_slots': self.final_slots
+              'final_slots': self.final_slots,
+              'start_hour': self.start_hour,
+              'end_hour': self.end_hour
            }
