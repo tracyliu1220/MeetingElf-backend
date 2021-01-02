@@ -264,4 +264,4 @@ def meeting_reference_create(hash_id):
   db.session.add(reference)
   db.session.commit()
 
-  return jsonify({'message': 'Success'}), 200
+  return jsonify({'message': 'Success', 'id': reference.id}), 200
