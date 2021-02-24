@@ -1,0 +1,9 @@
+Flask==1.1.2
+flask-sqlalchemy
+flask-restful
+flask-migrate
+flask-cors
+flask-testing
+PyJWT
+Werkzeug
+pycryptodome

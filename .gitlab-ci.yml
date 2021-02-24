@@ -1,0 +1,27 @@
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  tags:
+    - "backend"
+  script:
+    - docker-compose -f docker-compose.test.yml -p ci build
+    - echo "===== build finished ====="
+
+test-backend:
+  stage: test
+  tags:
+    - "backend"
+  script:
+    - docker-compose -f docker-compose.test.yml -p ci up --exit-code-from app
+    - echo "===== test finished ====="
+
+clean-job:
+  stage: .post
+  tags:
+    - "backend"
+  script:
+    - docker-compose -f docker-compose.test.yml -p ci down
+    - echo "===== clean finished ====="
